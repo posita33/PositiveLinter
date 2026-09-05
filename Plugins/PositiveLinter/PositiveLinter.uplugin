@@ -1,0 +1,59 @@
+{
+	"FileVersion": 3,
+	"Version": 11,
+	"VersionName": "3.0.0",
+	"FriendlyName": "PositiveLinter",
+	"Description": "Asset validation and naming-convention tools for Unreal Engine 5.7.4.",
+	"Category": "Other",
+	"CreatedBy": "PositiveLinter Contributors",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EngineVersion": "5.7.4",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "Linter",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			],
+			"TargetDenyList": [
+				"Server",
+				"Client"
+			]
+		},
+		{
+			"Name": "GamemakinLinter",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			],
+			"TargetDenyList": [
+				"Server",
+				"Client"
+			]
+		},
+		{
+			"Name": "MarketplaceLinter",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			],
+			"TargetDenyList": [
+				"Server",
+				"Client"
+			]
+		}
+	]
+}

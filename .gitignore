@@ -1,0 +1,20 @@
+# Unreal Engine generated files
+**/Binaries/
+**/Intermediate/
+**/Saved/
+**/DerivedDataCache/
+
+# Local plugin-package staging output
+/.build/
+/Plugins/PositiveLinter/Config/FilterPlugin.ini
+
+# IDE and user-specific files
+/.vs/
+/.idea/
+/.vscode/
+*.suo
+*.user
+*.VC.db
+*.VC.opendb
+*.sdf
+*.opensdf
