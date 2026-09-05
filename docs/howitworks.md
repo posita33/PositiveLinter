@@ -1,42 +1,50 @@
-# How Does Linting Work?
+---
+title: PositiveLinter の仕組み
+lang: ja
+date: 2026-09-06
+tags: [unreal-engine, positive-linter, ruleset, commandlet]
+status: active
+---
 
-Linter's bundled rulesets are included in the Linter Plugin content folder. Engine and Project plugin folders might be hidden in your engine. To show them, make sure the checkboxes next to Show Engine Content and Show Plugin Content are both checked in your Content Browser's View Options.
+# Lint の仕組み
+
+PositiveLinter に同梱されるルールセットは、プラグインのコンテンツフォルダーに含まれています。Engine プラグインおよび Project プラグインのコンテンツは、初期状態では Content Browser に表示されないことがあります。Content Browser の **Settings** で **Show Engine Content** と **Show Plugin Content** を有効にしてください。
 
 ![](img/ShowPluginContent.png)
 
-## Dissecting a Linter Rule Set
+## LintRuleSet の構成
 
 ![](img/MarketplaceLinterFolder.png)
 
-Linters are defined by `LintRuleSets`, essentially a fancy [Data Asset](https://www.youtube.com/watch?v=gLWXZ3FXhO8). In the above example, we are looking at the `MarketplaceLintRuleSet` asset which defines all of the rules we want to use when scanning for marketplace guideline compliance.
+ルールセットは `LintRuleSet` アセットで定義します。これは [Data Asset](https://www.youtube.com/watch?v=gLWXZ3FXhO8) の一種です。上の例では、Marketplace ガイドラインへの適合を確認するためのルールを定義した `MarketplaceLintRuleSet` アセットを開いています。
 
 ![](img/MarketplaceLintRuleSet.png)
 
-In the above image you'll see that this `LintRuleSet` uses a `NamingConvention` Data Asset named `MarketplaceNamingConvention` In addition to a NamingConvention asset, `LintRuleSet` assets also contain something called a Class Lint Rules Map. This is a map of Unreal Engine 4 classes paired with a list of `LintRules`, which are assets that make up individual rules that we'll cover later.
+`LintRuleSet` には、`MarketplaceNamingConvention` のような `NamingConvention` Data Asset を設定できます。さらに **Class Lint Rules Map** を持ちます。これは Unreal Engine のクラスと `LintRule` の一覧を対応付けるマップで、個々の検証ルールを構成します。
 
 ![](img/LintRulesMap.png)
 
-When objects in an Unreal Engine 4 project are linted, they are scanned using the rules that match the "most specific" class defined in the Class Lint Rules Map. You can use any class in this map, with the base `UObject` being a special case.
+プロジェクト内のオブジェクトを検証するときは、Class Lint Rules Map にあるクラスのうち、対象アセットに対して最も具体的なクラスに対応するルールを実行します。どのクラスもマップに指定できますが、`UObject` は特別な扱いです。
 
-Unfortunately at this time the Unreal Engine 4 editor does not allow `UObject` as a valid value as a key in this Class Lint Rules Map, so if you want to define rules that you want to scan `UObjects` with, please use the `AnyObject_LinterDummyClass` class instead.
+UE 5.7.4 のエディターでは、Class Lint Rules Map のキーに `UObject` を直接指定できません。`UObject` 全般へ適用するルールを定義したい場合は、代わりに `AnyObject_LinterDummyClass` を使用してください。
 
-With the above example ruleset, when the Linter comes across a `UBlueprint` asset it will scan that asset using the four lint rules defined above. This is because `UBlueprint` is a more specific class definition than `UObject`. Another asset type, such as a data asset, will instead use the `AnyObject_LinterDummyClass` rules when being scanned unless there is a more specific matching class defined in the ruleset than `UObject`.
+たとえば上のルールセットでは、`UBlueprint` アセットには `UBlueprint` 用に定義された 4 つの LintRule が適用されます。`UBlueprint` は `UObject` より具体的なクラスだからです。Data Asset などの別のアセット型は、より具体的な一致がルールセットにない限り、`AnyObject_LinterDummyClass` のルールで検証されます。
 
-**NOTE:** Currently there isn't support for allowing cascading rule checks, i.e. allowing a `UBlueprint` being scanned against rules paired with `UBlueprint` *as well as* `UObject`. This support is planned to be added in a future release. See [todo](/todo).
+**注記:** 現在、ルールをカスケードして実行する機能には対応していません。つまり、`UBlueprint` に対し、`UBlueprint` 用のルールと `UObject` 用のルールを同時に実行することはできません。
 
-## How Lint Rules Are Implemented
+## LintRule の実装
 
-While `LintRules` can be implemented in both Blueprint and C++, currently there aren't too many functions exposed to Blueprint that deal with asset metadata and lower level asset management checks and tasks. It is currently strongly recommended that you do your rule checking logic in C++ and then only expose configuration settings to a Blueprint class.
+`LintRule` は Blueprint と C++ のどちらでも実装できます。ただし、アセットメタデータや低レベルのアセット管理に関する機能は、Blueprint には十分公開されていません。検証ロジックは C++ に実装し、設定項目だけを Blueprint クラスに公開する方法を推奨します。
 
-All of Linter's bundled `LintRules` are Blueprint child classes that parent from a native C++ `LintRule`, with the goal that the Blueprint `LintRules` only expose configuration options.
+同梱の `LintRule` はすべて、ネイティブ C++ の `LintRule` を親に持つ Blueprint 子クラスです。Blueprint 側では主に設定値を公開します。
 
 ### PassesRule_Internal_Implementation
 
-The core of implementing your own `LintRule` is to implement the `PassesRule_Internal_Implementation` function. This function can be implemented in either C++ or Blueprint as this is a `BlueprintNativeEvent`. 
+独自の `LintRule` を作成する際の中心となる関数が `PassesRule_Internal_Implementation` です。この関数は `BlueprintNativeEvent` のため、C++ と Blueprint のどちらでも実装できます。
 
-This should be where the business logic of your `LintRule` operates. To report a rule violation, push a new `FLintRuleViolation` to the `OutRuleViolations` array and return false. You should always return false if **any** rule is violated and you should always return true if **no** rules were violated. A `FLintRuleViolation` is simply a struct that has a reference to the asset that is violating the rule, a reference to the rule that is being violated, and potentially any additional optional recommended text to display to the user reading the Lint Report.
+検証ロジックはこの関数へ実装します。違反を検出した場合は `OutRuleViolations` 配列へ `FLintRuleViolation` を追加し、`false` を返します。違反が 1 件でもあれば必ず `false`、違反がなければ必ず `true` を返してください。`FLintRuleViolation` には、違反したアセット、違反したルール、および Lint Report に表示できる推奨対応メッセージが含まれます。
 
-Implementing this function is all you need for your `LintRule` to be functional and ready for use. For the sake of example, here is how the Unreal Engine Marketplace Guideline rule for ensuring your textures are not too big is implemented:
+この関数を実装すれば `LintRule` として動作します。例として、テクスチャが大きすぎないことを確認するルールは次のように実装されています。
 
 ```cpp
 bool ULintRule_Texture_Size_NotTooBig::PassesRule_Internal_Implementation(UObject* ObjectToLint, const ULintRuleSet* ParentRuleSet, TArray<FLintRuleViolation>& OutRuleViolations) const
@@ -58,72 +66,72 @@ bool ULintRule_Texture_Size_NotTooBig::PassesRule_Internal_Implementation(UObjec
 }
 ```
 
-In the above code, we simply check to see if the `ObjectToLint` is a texture with width or height exceeding a `MaxTextureSizeX/MaxTextureSizeY`, which is defined in our Blueprint child as `8192`. This allows us to easily scan for textures that are bigger than 8k. If we ever want to decrease or increase the size of our textures allowed under this rule, we can easily do so by editing the `MaxTextureSizeX/MaxTextureSizeY` in Blueprint without requiring any code changes or code compiling.
+このコードは、`ObjectToLint` がテクスチャであり、その幅または高さが Blueprint 子クラスで設定された `MaxTextureSizeX` または `MaxTextureSizeY` を超えていないかを確認します。たとえば設定値が `8192` なら、8K を超えるテクスチャを検出できます。許容サイズを変える場合は Blueprint の値を編集するだけでよく、C++ の変更や再コンパイルは不要です。
 
-It is recommended that you create a Blueprint child of your native classes to fill out the Rule's display info. This way the rule can also have verbiage updates without requiring code edits.
+ルールの表示情報は、ネイティブクラスの Blueprint 子クラスで設定することを推奨します。メッセージなどの文言を変更するだけなら、コードを編集せずに済みます。
 
 ![](img/LintRulesInBP.png)
 
-### PassesRule Is Most Likely Not What You Want
+### PassesRule は通常オーバーライド不要です
 
-`LintRules` also have a virtual function called `PassesRule`. This is not meant for containing the business logic of your `LintRule`. This is a public `BlueprintCallable` function that allows your `LintRule` to have a Blueprint implementation of `PassesRule_Internal_Implementation`.
+`LintRule` には `PassesRule` という仮想関数もあります。ここは通常の検証ロジックを置くための関数ではありません。これは Blueprint から `PassesRule_Internal_Implementation` を実装できるようにする公開 `BlueprintCallable` 関数です。
 
-You should only implement this if you want to "early out" of the linting process. Linter's strategy is to try to implement error handling in `PassesRule` for things like possible null checks or invalid objects and then only performing the actual scan logic inside `PassesRule_Internal_Implementation`. You **do not** need to implement your own `PassesRule`.
+`PassesRule` を実装するのは、検証を早期に終了したい場合だけです。PositiveLinter の基本実装では、null チェックや無効なオブジェクトの処理を `PassesRule` で行い、実際の検証を `PassesRule_Internal_Implementation` で実行します。通常は独自の `PassesRule` を実装する必要はありません。
 
-### IsRuleSuppressed is optional
+### IsRuleSuppressed は任意です
 
-`LintRules` can also be programmatically suppressed by implementing the `IsRuleSuppressed` function. This function is called automatically by the base `PassesRule` implementation. If you want to simply suppress a rule, do so here instead of `PassesRule`.
+`IsRuleSuppressed` を実装すると、プログラムから `LintRule` を抑制できます。この関数は基本の `PassesRule` 実装から自動的に呼び出されます。ルールを無効化するだけなら、`PassesRule` ではなくこちらに実装してください。
 
-## How Lint Naming Conventions Are Implemented
+## 命名規約の実装
 
-`NamingConvention` assets are simply a list of naming conventions as a data asset. `LintRules` will have access to the `NamingConvention` data asset that is defined in the lint rule's parent `LintRuleSet`. The `NamingConvention` data asset isn't responsible for any implementation logic. Instead `LintRules` are written to perform these naming convention checks using the given `NamingConvention` data asset as configuration. 
+`NamingConvention` アセットは、命名規約の一覧を持つ Data Asset です。`LintRule` は、親 `LintRuleSet` に設定された `NamingConvention` Data Asset へアクセスできます。`NamingConvention` 自体は検証ロジックを持ちません。`LintRule` がこのアセットを設定値として利用し、命名規約をチェックします。
 
-## LintRuleCollections... collect rules
+## LintRuleCollection
 
-Sometimes it is easier to treat a collection of rules as a single rule. In this case, you can create a `LintRuleCollection` class that simply defines a list of other `LintRules`. This is very useful when dealing with repetitive path and file name lint rules.
+複数のルールを 1 つのルールとして扱う方が分かりやすい場合があります。その場合は、他の `LintRule` の一覧を持つ `LintRuleCollection` を作成できます。繰り返し利用するパスやファイル名のルールをまとめる用途に便利です。
 
-## Video Walkthrough of Creating A LintRuleSet
+## Commandlet による自動検証
 
-@TODO: Get this edited, uploaded, submitted, embedded
+PositiveLinter は、コマンドラインからプロジェクトを検証するための Commandlet を追加します。検証処理自体に失敗した場合は終了コード `1` を返します。Lint Report にエラーが含まれる場合は終了コード `2` を返します。`-TreatWarningsAsErrors` を指定した場合は、警告も終了コード `2` の対象です。
 
-## Automated Linting via Commandlets
+Commandlet を実行するには、Editor のコマンドレット実行バイナリ、`.uproject` のパス、`-run=Linter` を順に指定します。Windows の例は次のとおりです。
 
-The Linter plugin adds a Commandlet that you can run against your project via commandline. It will return an error code of 1 if the linting process fails for any reason. It will return an error code of 2 if Linter reports any errors, or warnings as well if `-TreatWarningsAsErrors` is passed on the commandline.
+```powershell
+& "C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "C:\Projects\MyProject\MyProject.uproject" -run=Linter
+```
 
-To invoke the commandlet, run your Editor binary (i.e. `D:\UE424\Engine\Binaries\Win64\UE4Editor-Cmd.exe`), followed by the path to your `.uproject` (i.e. `"C:\Users\Allar\Documents\Unreal Projects\Linterv2Test\Linterv2Test.uproject"`), followed by the arg `-run=Linter`.
+このコマンドは `/Game`、つまりプロジェクトのコンテンツを検証します。違反がなければ終了コード `0` を返します。
 
-Full command for example, `D:\UE424\Engine\Binaries\Win64\UE4Editor-Cmd.exe "C:\Users\Allar\Documents\Unreal Projects\Linterv2Test\Linterv2Test.uproject" -run=Linter`.
+### 使用する LintRuleSet を指定する
 
-This will run Linter against the `/Game` path, a.k.a. your project's path, and return error code 0 if there are no errors.
+各 LintRuleSet には、コマンドラインから識別するための **Commandlet Name** フィールドがあります。
 
-### Specifying which Lint Rule Set to use
+Gamemakin LLC UE4 Style Guide の Commandlet Name は `ue4.style`、Marketplace ルールセットは `marketplace` です。
 
-All Lint Rule Sets now have a filed named `Commandlet Name` which represents a simple name to identify them via commandline.
+`-RuleSet=` 引数でルールセットを指定できます。たとえば `-RuleSet=ue4.style` は Gamemakin のルールセットを、`-RuleSet=marketplace` は Marketplace ルールセットを使用します。`-RuleSet=` を省略した場合は、プロジェクトの既定 LintRuleSet が使用されます。
 
-The Gamemakin LLC UE4 Style Guide's `Commandlet Name` is `ue4.style`, where the Unreal Engine Marketplace Guidelines uses the name `marketplace`.
+### 追加引数
 
-To specify this, use the `-RuleSet=` arg. For example, `-RuleSet=ue4.style` will use the Gamemakin lint rule set. `-RuleSet=marketplace` will use the UnrealEngine Marketplace Guidelines. If `-RuleSet=` is not provided, Linter will use the project's default Lint Rule Set.
+#### コンテンツパス
 
-### Additional Args
+スキャンするフォルダーを複数指定できます。通常は `/Game/...` 形式の Unreal Engine パスを使用します。パスに空白が含まれる場合は引用符で囲んでください。
 
-#### Content Paths
+たとえば、プロジェクトの `Content` フォルダー内にある `Apple` と `Orange Stuff` だけを検証するには、次のように実行します。
 
-You can tell Linter to scan a list of folders to scan. They should generally be in the UE4 path form of `/Game/Content/...`. If a path includes spaces, wrap it in quotes.
+```powershell
+& "C:\Program Files\Epic Games\UE_5.7\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "C:\Projects\MyProject\MyProject.uproject" /Game/Apple "/Game/Orange Stuff" -run=Linter
+```
 
-For example, if you only wanted to scan folders `Apple` and `Orange Stuff` inside your project's `Content` folder...
+このコマンドは `Apple` と `Orange Stuff` の両フォルダーを検証します。`/Engine` やプラグインのコンテンツパスも指定できます。パスを指定しない場合の既定値は `/Game` です。
 
-`D:\UE424\Engine\Binaries\Win64\UE4Editor-Cmd.exe "C:\Users\Allar\Documents\Unreal Projects\Linterv2Test\Linterv2Test.uproject" /Game/Content/Apple "/Game/Content/Orange Stuff" -run=Linter`.
+#### JSON レポート
 
-This will scan both the `Apple` and `Orange Stuff` folders inside your project's `Content` folder. You can also pass in `Engine` and plugin folders. If no path is provided, the default will always be `/Game`.
+`.json` レポートを生成するには `-json` を指定します。既定ではプロジェクトの `Saved/LintReports/` フォルダーに出力されます。`-json=ReportName.json` のように指定すればレポート名を変更できます。相対パスは `Saved/LintReports/` からの相対パスとして扱われ、絶対パスも指定できます。
 
-#### JSON Report
+#### HTML レポート
 
-To generate a `.json` report, you can add the switch `-json` to generate a `.json` report in your project's `Saved/LintReports/` folder. You can override the name of the report via `-json=ReportName.json`. If you specify a relative path it will be relative to the `Saved/LintReports/` folder. You can also provide an absolute path to write the `.json` report to.
-
-#### HTML Report
-
-To generate a `.html` report, you can add the switch `-html` to generate a `.html` report in your project's `Saved/LintReports/` folder. You can override the name of the report via `-html=ReportName.html`. If you specify a relative path it will be relative to the `Saved/LintReports/` folder. You can also provide an absolute path to write the `.html` report to.
+`.html` レポートを生成するには `-html` を指定します。既定ではプロジェクトの `Saved/LintReports/` フォルダーに出力されます。`-html=ReportName.html` でレポート名を変更できます。相対パスは `Saved/LintReports/` からの相対パスとして扱われ、絶対パスも指定できます。
 
 #### TreatWarningsAsErrors
 
-If you use the `-TreatWarningsAsErrors` switch, Linter will return an error code of 2 if the report contains any warnings. By default, Linter only returns an error code if it fails to lint or if the lint report contains errors.
+`-TreatWarningsAsErrors` を指定すると、レポートに警告が含まれる場合も終了コード `2` を返します。既定では、検証処理の失敗または Lint Report のエラーだけがエラー終了の対象です。

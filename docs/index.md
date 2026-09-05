@@ -1,30 +1,38 @@
-# Welcome to Linter and Gamemakin LLC Style Guide Documentation
+---
+title: PositiveLinter ドキュメント
+lang: ja
+date: 2026-09-06
+tags: [unreal-engine, positive-linter, lint]
+status: active
+---
 
-This is the official documentation for Linter and the [Gamemakin LLC Style Guide](http://ue4.style). If you are looking for help or support, please try the [Gamemakin LLC Community Discord](http://discord.gamemak.in).
+# PositiveLinter と Gamemakin LLC スタイルガイドのドキュメント
 
-## About Linter
+PositiveLinter と [Gamemakin LLC Style Guide](http://ue4.style) の公式ドキュメントです。サポートや質問については、[Gamemakin LLC Community Discord](http://discord.gamemak.in) も参照してください。
+
+## PositiveLinter について
 
 <div style="position: relative; height: 0; overflow: hidden; max-width: 100%; height: auto;">
     <iframe width="640" height="320" src="https://www.youtube.com/embed/An0R9OmULO0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
-Linter is an Unreal Engine 4 plugin available on the Unreal Engine Marketplace that can be used for automated scanning and reporting of a UE4 project's adherence to style guide standards. It can scan through all of your project's content using programmatic rulesets and tell you when you aren't following a rule. This is a fairly common type of tool usually seen in web development, but now we can do it with Unreal Engine!
+PositiveLinter は、Unreal Engine 5.7.4 向けのアセット検証・命名規約チェック用エディタープラグインです。ルールセットを使ってプロジェクトのコンテンツを自動スキャンし、規約に違反しているアセットをレポートします。Web 開発で一般的な lint の仕組みを、Unreal Engine プロジェクトにも適用できます。
 
-By default Linter is bundled with two rule sets:
+標準で次の 2 種類のルールセットを同梱しています。
 
-1. The [Unreal Engine Marketplace Guidelines](https://www.unrealengine.com/marketplace-guidelines)
-1. The [Gamemakin LLC Style Guide](http://ue4.style)
+1. [Unreal Engine Marketplace Guidelines](https://www.unrealengine.com/marketplace-guidelines) を基にしたルールセット
+2. [Gamemakin LLC Style Guide](http://ue4.style) のルールセット
 
-## About the Gamemakin LLC Style Guide
+## Gamemakin LLC Style Guide について
 
-While Linter is now capable of supporting multiple rule sets, Linter was originally developed with the Gamemakin LLC Style Guide in mind. This style guide is an opinionated set of guidelines written by [Michael Allar](http://www.twitter.com/michaelallar) for Unreal Engine 4 projects that continue to grow, change, and respond to newer and better organization patterns as well as community feedback.
+PositiveLinter は複数のルールセットに対応していますが、もともとは Gamemakin LLC Style Guide を想定して開発されました。このスタイルガイドは [Michael Allar](http://www.twitter.com/michaelallar) により作成された、Unreal Engine プロジェクト向けの実践的な規約集です。プロジェクトの成長やコミュニティからのフィードバックに合わせ、よりよい整理方法を取り入れて更新されています。
 
-This style guide is not meant to be the definitive solution to all projects, but it is open-sourced in the hopes that those without style guides can use it as a starting point for their practices and try to come to a common consensus to many aspects of working with Unreal Engine 4.
+このスタイルガイドは、すべてのプロジェクトに唯一の正解を示すものではありません。独自の規約をまだ持たないチームが運用の出発点として利用し、Unreal Engine 開発における共通認識をつくるためにオープンソースで公開されています。
 
-It can be found at the following URL: [http://ue4.style](http://ue4.style)
+スタイルガイド本体は [http://ue4.style](http://ue4.style) で確認できます。
 
-## About the Unreal Engine Marketplace Guidelines
+## Unreal Engine Marketplace Guidelines について
 
-If you are creating content for the Unreal Engine Marketplace, your content must adhere to Epic's guidelines [which can be found on their site](https://www.unrealengine.com/marketplace-guidelines).
+Unreal Engine Marketplace 向けのコンテンツを作成する場合は、Epic の[ガイドライン](https://www.unrealengine.com/marketplace-guidelines)を確認してください。
 
-Linter, Gamemakin LLC, and Michael Allar do not have any control or influence over these guidelines as well as whether your assets meet the required standards for the Unreal Engine Marketplace, but Linter is designed to help you conform to their rules by scanning your project against the rules they will be validated with.
+PositiveLinter、Gamemakin LLC、および Michael Allar は、これらのガイドラインや審査結果を管理していません。PositiveLinter はプロジェクトをルールセットでスキャンし、規約に適合するための確認を支援します。最終的な要件と審査基準は必ず Epic の最新情報で確認してください。

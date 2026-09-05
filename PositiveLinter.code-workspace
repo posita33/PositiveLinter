@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "pasteImage.path": "${projectRoot}/docs/img",
+    "pasteImage.basePath": "${projectRoot}/docs",
+    "pasteImage.forceUnixStyleSeparator": true,
+    "pasteImage.defaultName": "${currentFileNameWithoutExt}-YYYYMMDD-HHmmss",
+    "pasteImage.showFilePathConfirmInputBox": true
+  },
+  "extensions": {
+    "recommendations": [
+      "mushan.vscode-paste-image"
+    ]
+  }
+}
