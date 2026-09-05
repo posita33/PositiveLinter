@@ -29,7 +29,7 @@ void FLinterContentBrowserExtensions::InstallHooks(FLinterModule* LinterModule, 
 		{
 			TSharedRef<FExtender> Extender = MakeShared<FExtender>();
 			Extender->AddMenuExtension(
-				"PathContextSourceControl",
+				"PathContextBulkOperations",
 				EExtensionHook::After,
 				TSharedPtr<FUICommandList>(),
 				FMenuExtensionDelegate::CreateStatic(&Local::ContentBrowserExtenderFunc, SelectedPaths)
@@ -172,7 +172,7 @@ void FLinterContentBrowserExtensions::RemoveHooks(FLinterModule* LinterModule, F
 		FContentBrowserModule& ContentBrowserModule = FModuleManager::LoadModuleChecked<FContentBrowserModule>(TEXT("ContentBrowser"));
 
 		// Path view extenders
-		TArray<FContentBrowserMenuExtender_SelectedPaths>& CBMenuExtenderDelegates = ContentBrowserModule.GetAllAssetContextMenuExtenders();
+		TArray<FContentBrowserMenuExtender_SelectedPaths>& CBMenuExtenderDelegates = ContentBrowserModule.GetAllPathViewContextMenuExtenders();
 		CBMenuExtenderDelegates.RemoveAll([pContentBrowserExtenderDelegateHandle](const FContentBrowserMenuExtender_SelectedPaths & Delegate) { return Delegate.GetHandle() == *pContentBrowserExtenderDelegateHandle; });
 
 		// Asset extenders

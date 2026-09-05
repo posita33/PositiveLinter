@@ -6,12 +6,11 @@
 	"Description": "Asset validation and naming-convention tools for Unreal Engine 5.7.4.",
 	"Category": "Other",
 	"CreatedBy": "PositiveLinter Contributors",
-	"DocsURL": "",
+	"DocsURL": "https://github.com/posita33/PositiveLinter/blob/main/docs/gettingstarted.md",
 	"MarketplaceURL": "",
-	"SupportURL": "",
-	"EngineVersion": "5.7.4",
+	"SupportURL": "https://github.com/posita33/PositiveLinter",
 	"CanContainContent": true,
-	"Installed": true,
+	"Installed": false,
 	"Modules": [
 		{
 			"Name": "Linter",
