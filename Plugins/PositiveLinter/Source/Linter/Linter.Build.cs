@@ -20,6 +20,7 @@ public class Linter : ModuleRules
 			new string[]
             {
                 "CoreUObject",
+                "ContentBrowser",
                 "Engine",
                 "Slate",
                 "SlateCore",
