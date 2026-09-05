@@ -1,87 +1,93 @@
-# Unreal Engine Marketplace Guidelines
+---
+title: Unreal Engine Marketplace ガイドライン
+lang: ja
+date: 2026-09-06
+tags: [unreal-engine, positive-linter, marketplace]
+status: active
+---
 
-This page covers how Linter implements rule sets based off of the [Unreal Engine Marketplace Guidelines](https://www.unrealengine.com/marketplace-guidelines). Not every guideline is currently supported but it is the goal of Linter to continually improve support for the Unreal Engine Marketplace Guidelines as well as other commonly used style guides.
+# Unreal Engine Marketplace ガイドライン
 
-If you would like to contribute by adding support for additional guidelines, please join the discussion in the [Gamemakin LLC Community Discord](http://discord.gamemak.in).
+このページでは、[Unreal Engine Marketplace Guidelines](https://www.unrealengine.com/marketplace-guidelines) を基にしたルールセットを PositiveLinter がどのように実装しているかを説明します。すべてのガイドラインに対応しているわけではありませんが、Marketplace ガイドラインや広く使われるスタイルガイドへの対応を継続的に改善することを目指しています。
 
-## Disclaimer
+追加のガイドラインに対応するための貢献に興味がある場合は、[Gamemakin LLC Community Discord](http://discord.gamemak.in) の議論へ参加してください。
 
-You are not guaranteed to have your product submission accepted by the Unreal Engine Marketplace simply because you might pass all these rules, however failing these rules will make your submission incredibly more likely to be rejected.
+## 免責事項
 
-## 2.3.6 Particle Effects
+このルールセットのすべての検証に合格しても、Unreal Engine Marketplace でのコンテンツ採用が保証されるわけではありません。一方で、ルール違反がある場合は審査で却下される可能性が高くなります。要件は変わる可能性があるため、提出前に Epic の最新のガイドラインを必ず確認してください。
 
-### 2.3.6.b [Particle emitter names must be accurate and relevant and must not be "Particle Emitter" unless they're the only emitter in a given particle system](https://www.unrealengine.com/en-US/marketplace-guidelines#236b)
+## 2.3.6 パーティクルエフェクト
 
-Linter's interpretation of this is to simply check to see if a `UParticleSystem` asset has 2 or more emitters, and if it does, check to see if any of the emitters are named "Particle Emitter". If they are, then this rule is being violated.
+### 2.3.6.b [パーティクルエミッター名は正確かつ関連性のあるものにし、単一エミッターのシステムを除いて "Particle Emitter" を使用してはならない](https://www.unrealengine.com/en-US/marketplace-guidelines#236b)
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Particles_EmitterNames.MPLR_Particles_EmitterNames'`.
+PositiveLinter では、`UParticleSystem` アセットに 2 個以上のエミッターがある場合、いずれかのエミッター名が `Particle Emitter` になっていないかを確認します。該当する場合はルール違反です。
 
-## 2.3.7 Textures
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Particles_EmitterNames.MPLR_Particles_EmitterNames'` です。
 
-### 2.3.7.a [Both dimensions of each texture should have a size that is a power of 2 where applicable (e.g. 1024x512 or 1024x4096)](https://www.unrealengine.com/en-US/marketplace-guidelines#237a)
+## 2.3.7 テクスチャ
 
-Linter's interpretation is to do a simple "power of two" math test on both the width and the height of all textures. If a texture fails this power of two math test, it then is checked to see if it's `LODGROUP` is exempt from this rule. For the Unreal Engine Marketplace Guidelines, this rule set is configured to only allow textures of the `UI` `LODGROUP` to not have power of two sizes.
+### 2.3.7.a [該当する場合、各テクスチャの両辺は 2 のべき乗サイズにする（例: 1024x512、1024x4096）](https://www.unrealengine.com/en-US/marketplace-guidelines#237a)
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Texture2D_PowerOfTwo.MPLR_Texture2D_PowerOfTwo'`.
+PositiveLinter は、すべてのテクスチャの幅と高さに対して 2 のべき乗かどうかを判定します。判定に失敗したテクスチャは、`LODGROUP` がこのルールの例外として設定されているかも確認します。Marketplace ルールセットでは、`UI` `LODGROUP` のテクスチャだけを、2 のべき乗サイズでなくてもよいものとして設定しています。
 
-### 2.3.7.b [Textures must have a maximum size in either dimension of 8192](https://www.unrealengine.com/en-US/marketplace-guidelines#237b)
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Texture2D_PowerOfTwo.MPLR_Texture2D_PowerOfTwo'` です。
 
-Linter's interpretation of this is to make sure a texture's width or height isn't bigger than 8192. That simple.
+### 2.3.7.b [テクスチャのいずれかの辺の最大サイズは 8192](https://www.unrealengine.com/en-US/marketplace-guidelines#237b)
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Texture2D_Size_NotTooBig.MPLR_Texture2D_Size_NotTooBig'`.
+PositiveLinter は、テクスチャの幅または高さが 8192 を超えていないことを確認します。
 
-## 2.4 Audio
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Texture2D_Size_NotTooBig.MPLR_Texture2D_Size_NotTooBig'` です。
 
-### 2.4.c [Audio files must have a sample rate of 22050 Hz or 44100 Hz with no audio defects](https://www.unrealengine.com/en-US/marketplace-guidelines#24c)
+## 2.4 オーディオ
 
-Linter's interpretation of this is pretty straight forward. `USoundWave` assets must have sample rates of either 22050 or 44100.
+### 2.4.c [オーディオファイルのサンプルレートは 22050 Hz または 44100 Hz とし、音声の欠陥があってはならない](https://www.unrealengine.com/en-US/marketplace-guidelines#24c)
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_SoundWave_SampleRate.MPLR_SoundWave_SampleRate'`.
+PositiveLinter は、`USoundWave` アセットのサンプルレートが 22050 または 44100 であることを確認します。
 
-## 2.5 Blueprints
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_SoundWave_SampleRate.MPLR_SoundWave_SampleRate'` です。
 
-### 2.5.d [Blueprints must have no loose nodes unless they’re commented for example/tutorial purposes](https://www.unrealengine.com/en-US/marketplace-guidelines#25d)
+## 2.5 Blueprint
 
-Linter's interpretation of this is that a `UBlueprint` that has any node on any of its graphs that has zero connections to any other node.
+### 2.5.d [Blueprint には、例やチュートリアル目的でコメントされている場合を除き、接続されていないノードがあってはならない](https://www.unrealengine.com/en-US/marketplace-guidelines#25d)
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Blueprint_LooseNodes.MPLR_Blueprint_LooseNodes'`.
+PositiveLinter では、`UBlueprint` のいずれかのグラフに、ほかのノードへの接続が 1 本もないノードが存在しないかを確認します。
 
-### 2.5.e [Blueprints must generate no errors or consequential warnings](https://www.unrealengine.com/en-US/marketplace-guidelines#25e)
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Blueprint_LooseNodes.MPLR_Blueprint_LooseNodes'` です。
 
-Linter's interpretation of this is that a `UBlueprint` must not have a compile status of `BS_Error` or `BS_UpToDateWithWarnings`. 
+### 2.5.e [Blueprint はエラーまたは重大な警告を発生させてはならない](https://www.unrealengine.com/en-US/marketplace-guidelines#25e)
 
-That is, the compile button for this Blueprint should not have any error or warning icon on it.
+PositiveLinter は、`UBlueprint` のコンパイル状態が `BS_Error` または `BS_UpToDateWithWarnings` でないことを確認します。つまり、その Blueprint のコンパイルボタンにエラーまたは警告アイコンが表示されない状態である必要があります。
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Blueprint_Compiles.MPLR_Blueprint_Compiles'`.
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Blueprint_Compiles.MPLR_Blueprint_Compiles'` です。
 
-## 2.7 File Structure
+## 2.7 ファイル構造
 
-### 2.7.1.a [Folder and files must be accurate and consistent in naming convention within the context of their project](https://www.unrealengine.com/en-US/marketplace-guidelines#271a)
+### 2.7.1.a [フォルダー名とファイル名は、プロジェクトの文脈において正確かつ一貫した命名規約に従う必要がある](https://www.unrealengine.com/en-US/marketplace-guidelines#271a)
 
-Linter's interpretation of this is that all assets should match a pattern defined in the rule set's `NamingConvention` asset.
+PositiveLinter は、すべてのアセットがルールセットの `NamingConvention` アセットで定義されたパターンに一致することを確認します。
 
-The Marketplace `NamingConvention` asset is `MarketplaceNamingConvention'/Linter/MarketplaceLinter/MarketplaceNamingConvention.MarketplaceNamingConvention'` and the rule that checks for this is `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_IsNamedCorrectly.MPLR_IsNamedCorrectly'`.
+Marketplace の `NamingConvention` アセットは `MarketplaceNamingConvention'/PositiveLinter/MarketplaceLinter/MarketplaceNamingConvention.MarketplaceNamingConvention'` です。この規約を確認するルールは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_IsNamedCorrectly.MPLR_IsNamedCorrectly'` です。
 
-### 2.7.1.b [Folders and files must not be vaguely-named such as \"Assets\", \"NewFolder\", etc.](https://www.unrealengine.com/en-US/marketplace-guidelines#271b)
+### 2.7.1.b [フォルダー名とファイル名に "Assets"、"NewFolder" などの曖昧な名称を使用してはならない](https://www.unrealengine.com/en-US/marketplace-guidelines#271b)
 
-Linter's interpretation of this is that all path elements must never be "Assets" or "NewFolder". 
+PositiveLinter は、パスの各要素が `Assets` または `NewFolder` でないことを確認します。
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Path_DisallowedPathNames.MPLR_Path_DisallowedPathNames'`.
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Path_DisallowedPathNames.MPLR_Path_DisallowedPathNames'` です。
 
-### 2.7.1.c [Folder and file names must contain only English alphanumeric characters and underscores](https://www.unrealengine.com/en-US/marketplace-guidelines#271c)
+### 2.7.1.c [フォルダー名とファイル名には英数字およびアンダースコアのみを使用する](https://www.unrealengine.com/en-US/marketplace-guidelines#271c)
 
-Linter's interpretation of this is that all path elements are tested against a Regular Expression `[^a-zA-Z0-9_]` which is only valid if the entire path element does not have any character except the letters "a through z", "A through Z", "0 through 9", and the '_' character.
+PositiveLinter は、各パス要素を正規表現 `[^a-zA-Z0-9_]` で確認します。英小文字 `a`〜`z`、英大文字 `A`〜`Z`、数字 `0`〜`9`、および `_` 以外の文字を含まない場合だけ有効です。
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Path_AlphaNumeric.MPLR_Path_AlphaNumeric'`.
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Path_AlphaNumeric.MPLR_Path_AlphaNumeric'` です。
 
-### 2.7.2.b [In order to reduce migration conflicts after importing project files from the Epic Games Launcher, all project-specific assets must be stored in one top level folder; there must be no other folders or files directly under the Content folder](https://www.unrealengine.com/en-US/marketplace-guidelines#272b)
+### 2.7.2.b [Epic Games Launcher からプロジェクトファイルをインポートした後の移行競合を減らすため、プロジェクト固有のアセットは Content 直下の単一の最上位フォルダーに格納し、Content 直下には他のフォルダーやファイルを置かない](https://www.unrealengine.com/en-US/marketplace-guidelines#272b)
 
-Linter's interpretation of this is that the parent folder of any asset should not be the path `/Content/`.
+PositiveLinter は、アセットの親フォルダーが `/Content/` ではないことを確認します。
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Path_NoTopLevelAssets.MPLR_Path_NoTopLevelAssets'`.
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Path_NoTopLevelAssets.MPLR_Path_NoTopLevelAssets'` です。
 
-### 2.7.2.d [Including the name of the top level folder under the Content folder, all asset file paths must be 140 characters or less](https://www.unrealengine.com/en-US/marketplace-guidelines#272d)
+### 2.7.2.d [Content 直下の最上位フォルダー名を含むすべてのアセットファイルパスは、140 文字以下でなければならない](https://www.unrealengine.com/en-US/marketplace-guidelines#272d)
 
-Linter's interpretation of this is that the path of any asset returned by `UObject::GetPathName()`, with the redundant asset name chopped off, should not be longer than 140 characters.
+PositiveLinter は、`UObject::GetPathName()` が返すアセットパスから重複するアセット名を除いた長さが 140 文字以下かを確認します。
 
-This is handled by `Blueprint'/Linter/MarketplaceLinter/LintRules/MPLR_Path_IsNotTooLong.MPLR_Path_IsNotTooLong'`. The path name that is used for this asset for example would be `/Linter/MarketplaceLinter/LintRules/MPLR_Path_IsNotTooLong'`.
+実装するアセットは `Blueprint'/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Path_IsNotTooLong.MPLR_Path_IsNotTooLong'` です。たとえば、このアセットで使用するパス名は `/PositiveLinter/MarketplaceLinter/LintRules/MPLR_Path_IsNotTooLong` です。

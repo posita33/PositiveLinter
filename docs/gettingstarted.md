@@ -1,41 +1,52 @@
-# Getting Started
+---
+title: はじめに
+lang: ja
+date: 2026-09-06
+tags: [unreal-engine, positive-linter, installation]
+status: active
+---
 
-## Requirements
+# はじめに
 
-* You will need a launcher version of Unreal Engine 4 version 4.24 or later.
-* You must purchase (for free) the Linter plugin on the Unreal Engine Marketplace.
+## 必要な環境
 
-@TODO: Add link here once I have it
+* Unreal Engine **5.7.4**
+* プロジェクトを編集できる権限
 
-## Installing From The Launcher
+## インストール
 
-1. Close all your instances of Unreal Engine 4
-2. Using the Epic Launcher find Linter in your Vault
-3. Use the Install to Engine button to install Linter to your Engine
+1. 起動中の Unreal Editor をすべて閉じます。
+2. [`Plugins/PositiveLinter`](../Plugins/PositiveLinter) フォルダーを、対象プロジェクトの `Plugins` フォルダーへコピーします。
+3. 必要に応じてプロジェクトファイルを再生成します。
+4. プロジェクトを Unreal Editor で開きます。
 
 ![](img/LinterLauncher.png)
 
-## Enabling Linter
+> この画像は旧 Linter 版のものです。現在のソース版はプロジェクトへ直接コピーして導入します。
 
-1. Open your project
-2. Open the Plugins window by clicking Edit on the main toolbar and navigating to Plugins
-3. Search for Linter
-4. Enable the Linter plugin by ensuring the Enabled checkbox is checked
-5. Restart the editor
+## PositiveLinter を有効にする
 
-## Using Linter
+1. 対象プロジェクトを開きます。
+2. メインツールバーで **Edit** を開き、**Plugins** を選択します。
+3. `PositiveLinter` を検索します。
+4. **Enabled** をオンにします。
+5. エディターを再起動します。
 
-Once installed there isn't much in the way of using Linter. Operating Linter is pretty straightforward:
+## PositiveLinter を使う
 
-1. Right-click on a content folder in your project
-2. Click "Scan with Linter"
-3. Select the ruleset you would like to use for linting
-4. Wait for the results
+導入後の操作は次のとおりです。
+
+1. Content Browser でスキャン対象のフォルダーを右クリックします。
+2. **Scan with PositiveLinter** を選択します。
+3. 使用するルールセットを選択します。
+4. スキャンが完了するまで待ちます。
 
 ![](img/ScanWithLinter.png)
 
-## The Lint Report
+> この画像のメニュー名は旧版の **Scan with Linter** です。UE 5.7.4 対応版では **Scan with PositiveLinter** と表示されます。
 
-Once a project is scanned, you will be presented with a Lint Report that provides an overall summary of the state of your project.
+## Lint Report
+
+スキャンが完了すると、プロジェクト全体の状態をまとめた **Lint Report** が表示されます。
 
 ![](img/LintReport.png)
