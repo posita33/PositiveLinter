@@ -3,24 +3,41 @@
 #include "LintRuleSet.h"
 #include "LinterNamingConvention.h"
 #include "HAL/FileManager.h"
+#include "TextureCompiler.h"
 
 ULintRule_Texture_Size_PowerOfTwo::ULintRule_Texture_Size_PowerOfTwo(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	bRequiresGameThread = true;
 	IgnoreTexturesInTheseGroups.Add(TextureGroup::TEXTUREGROUP_UI);
 }
 
 bool ULintRule_Texture_Size_PowerOfTwo::PassesRule(UObject* ObjectToLint, const ULintRuleSet* ParentRuleSet, TArray<FLintRuleViolation>& OutRuleViolations) const
 {
 	// If we aren't a texture, abort
-	if (Cast<UTexture2D>(ObjectToLint) == nullptr)
+	UTexture2D* Texture = Cast<UTexture2D>(ObjectToLint);
+	if (Texture == nullptr)
 	{
 		// @TODO: Bubble up some sort of configuration error?
 		return true;
 	}
 
+	// Texture platform data can be replaced while asynchronous compilation is in
+	// progress. This rule runs on the game thread, so wait for the data that we
+	// are about to inspect to be ready.
+#if WITH_EDITOR
+	TArray<UTexture*> TexturesToFinish;
+	TexturesToFinish.Add(Texture);
+	FTextureCompilingManager::Get().FinishCompilation(TexturesToFinish);
+#endif
+
+	if (Texture->GetPlatformData() == nullptr)
+	{
+		return true;
+	}
+
 	// If we're to ignore this texture LOD group, abort
-	if (IgnoreTexturesInTheseGroups.Contains(Cast<UTexture2D>(ObjectToLint)->LODGroup))
+	if (IgnoreTexturesInTheseGroups.Contains(Texture->LODGroup))
 	{
 		return true;
 	}
@@ -30,20 +47,27 @@ bool ULintRule_Texture_Size_PowerOfTwo::PassesRule(UObject* ObjectToLint, const 
 
 bool ULintRule_Texture_Size_PowerOfTwo::PassesRule_Internal_Implementation(UObject* ObjectToLint, const ULintRuleSet* ParentRuleSet, TArray<FLintRuleViolation>& OutRuleViolations) const
 {
-	const UTexture2D* Texture = CastChecked<UTexture2D>(ObjectToLint);
+	const UTexture2D* Texture = Cast<UTexture2D>(ObjectToLint);
+	if (Texture == nullptr || Texture->GetPlatformData() == nullptr)
+	{
+		return true;
+	}
 
-	int32 TexSizeX = Texture->GetSizeX();
-	int32 TexSizeY = Texture->GetSizeY();
+	const int32 TexSizeX = Texture->GetSizeX();
+	const int32 TexSizeY = Texture->GetSizeY();
 
-	bool bXFail = ((TexSizeX & (TexSizeX - 1)) != 0);
-	bool bYFail = ((TexSizeY & (TexSizeY - 1)) != 0);
+	const bool bXFail = TexSizeX <= 0 || !FMath::IsPowerOfTwo(TexSizeX);
+	const bool bYFail = TexSizeY <= 0 || !FMath::IsPowerOfTwo(TexSizeY);
 
 	UEnum* TextureGroupEnum = StaticEnum<TextureGroup>();
 	FString IgnoredLODGroupNames;
 
-	for (TEnumAsByte<TextureGroup> LODGroup : IgnoreTexturesInTheseGroups)
+	if (TextureGroupEnum != nullptr)
 	{
-		IgnoredLODGroupNames += TextureGroupEnum->GetMetaData(TEXT("DisplayName"), LODGroup) + TEXT(", ");
+		for (TEnumAsByte<TextureGroup> LODGroup : IgnoreTexturesInTheseGroups)
+		{
+			IgnoredLODGroupNames += TextureGroupEnum->GetMetaData(TEXT("DisplayName"), LODGroup) + TEXT(", ");
+		}
 	}
 	IgnoredLODGroupNames.RemoveFromEnd(TEXT(", "));
 

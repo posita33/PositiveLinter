@@ -17,20 +17,23 @@ status: active
 
 1. 起動中の Unreal Editor をすべて閉じます。
 2. [`Plugins/PositiveLinter`](../Plugins/PositiveLinter) フォルダーを、対象プロジェクトの `Plugins` フォルダーへコピーします。
-3. 必要に応じてプロジェクトファイルを再生成します。
-4. プロジェクトを Unreal Editor で開きます。
 
-![](img/LinterLauncher.png)
+![](img/gettingstarted-20260906-010419.png)
 
-> この画像は旧 Linter 版のものです。現在のソース版はプロジェクトへ直接コピーして導入します。
+3. プロジェクトを Unreal Editor で開きます。
 
 ## PositiveLinter を有効にする
 
 1. 対象プロジェクトを開きます。
 2. メインツールバーで **Edit** を開き、**Plugins** を選択します。
-3. `PositiveLinter` を検索します。
-4. **Enabled** をオンにします。
-5. エディターを再起動します。
+
+![](img/gettingstarted-20260906-011256.png)
+
+3. `PositiveLinter` を検索し、有効でない場合は**Enabled** をオンにします。
+
+![](img/gettingstarted-20260906-022141.png)
+
+4. OffからONにした場合はエディターを再起動します。
 
 ## PositiveLinter を使う
 
@@ -38,15 +41,19 @@ status: active
 
 1. Content Browser でスキャン対象のフォルダーを右クリックします。
 2. **Scan with PositiveLinter** を選択します。
-3. 使用するルールセットを選択します。
+
+![](img/gettingstarted-20260906-013611.png)
+
+3. 使用するルールセットを選択し、NEXTボタンをクリックします。
+
+![](img/gettingstarted-20260906-015914.png)
+
 4. スキャンが完了するまで待ちます。
-
-![](img/ScanWithLinter.png)
-
-> この画像のメニュー名は旧版の **Scan with Linter** です。UE 5.7.4 対応版では **Scan with PositiveLinter** と表示されます。
 
 ## Lint Report
 
 スキャンが完了すると、プロジェクト全体の状態をまとめた **Lint Report** が表示されます。
+「Export To JSON」,「Export To HTML」をクリックすると外部ファイルとして結果を出力できます。
+「CLOSE」をクリックすると終了します。
 
-![](img/LintReport.png)
+![](img/gettingstarted-20260906-020744.png)

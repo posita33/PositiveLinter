@@ -10,19 +10,23 @@ status: active
 
 PositiveLinter に同梱されるルールセットは、プラグインのコンテンツフォルダーに含まれています。Engine プラグインおよび Project プラグインのコンテンツは、初期状態では Content Browser に表示されないことがあります。Content Browser の **Settings** で **Show Engine Content** と **Show Plugin Content** を有効にしてください。
 
-![](img/ShowPluginContent.png)
+![](img/howitworks-20260906-025144.png)
 
 ## LintRuleSet の構成
 
-![](img/MarketplaceLinterFolder.png)
+![](img/howitworks-20260906-025341.png)
 
 ルールセットは `LintRuleSet` アセットで定義します。これは [Data Asset](https://www.youtube.com/watch?v=gLWXZ3FXhO8) の一種です。上の例では、Marketplace ガイドラインへの適合を確認するためのルールを定義した `MarketplaceLintRuleSet` アセットを開いています。
 
-![](img/MarketplaceLintRuleSet.png)
+![](img/howitworks-20260906-025502.png)
 
-`LintRuleSet` には、`MarketplaceNamingConvention` のような `NamingConvention` Data Asset を設定できます。さらに **Class Lint Rules Map** を持ちます。これは Unreal Engine のクラスと `LintRule` の一覧を対応付けるマップで、個々の検証ルールを構成します。
+`LintRuleSet` のNamingConvertionには、`MarketplaceNamingConvention` のような `NamingConvention` Data Assetを設定できます。
 
-![](img/LintRulesMap.png)
+![](img/howitworks-20260906-122006.png)
+
+さらに **Class Lint Rules Map** を持ちます。これは Unreal Engine のクラスと `LintRule` の一覧を対応付けるマップで、個々の検証ルールを構成します。
+
+![](img/howitworks-20260906-122323.png)
 
 プロジェクト内のオブジェクトを検証するときは、Class Lint Rules Map にあるクラスのうち、対象アセットに対して最も具体的なクラスに対応するルールを実行します。どのクラスもマップに指定できますが、`UObject` は特別な扱いです。
 
@@ -70,7 +74,7 @@ bool ULintRule_Texture_Size_NotTooBig::PassesRule_Internal_Implementation(UObjec
 
 ルールの表示情報は、ネイティブクラスの Blueprint 子クラスで設定することを推奨します。メッセージなどの文言を変更するだけなら、コードを編集せずに済みます。
 
-![](img/LintRulesInBP.png)
+![](img/howitworks-20260906-121618.png)
 
 ### PassesRule は通常オーバーライド不要です
 

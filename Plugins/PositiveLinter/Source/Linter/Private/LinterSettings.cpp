@@ -10,7 +10,7 @@ ULinterSettings::ULinterSettings(const FObjectInitializer& ObjectInitializer)
 {
 	if (DefaultLintRuleSet.IsNull())
 	{
-		static ConstructorHelpers::FObjectFinder<ULintRuleSet> DefaultMarketplaceRuleSetRef(TEXT("LintRuleSet'/Linter/MarketplaceLinter/MarketplaceLintRuleSet.MarketplaceLintRuleSet'"));
+		static ConstructorHelpers::FObjectFinder<ULintRuleSet> DefaultMarketplaceRuleSetRef(TEXT("LintRuleSet'/PositiveLinter/MarketplaceLinter/MarketplaceLintRuleSet.MarketplaceLintRuleSet'"));
 		DefaultLintRuleSet = DefaultMarketplaceRuleSetRef.Object;
 	}
 }
