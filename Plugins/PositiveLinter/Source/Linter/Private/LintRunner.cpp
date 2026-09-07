@@ -9,19 +9,14 @@ FLintRunner::FLintRunner(UObject* InLoadedObject, const ULintRuleSet* LintRuleSe
 	: LoadedObject(InLoadedObject)
 	, RuleSet(LintRuleSet)
 	, pOutRuleViolations(InpOutRuleViolations)
-	, pLoadedRuleList(LintRuleSet != nullptr ? LintRuleSet->GetLintRuleListForClass(InLoadedObject->GetClass()) : nullptr)
+	, LoadedRuleList(LintRuleSet != nullptr && InLoadedObject != nullptr ? LintRuleSet->GetResolvedLintRulesForClass(InLoadedObject->GetClass()) : FLintRuleList())
 	, ParentScopedSlowTask(InParentScopedSlowTask)
 {
 }
 
 bool FLintRunner::RequiresGamethread()
 {
-	if (pLoadedRuleList != nullptr)
-	{
-		return pLoadedRuleList->RequiresGameThread();
-	}
-
-	return false;
+	return LoadedRuleList.RequiresGameThread();
 }
 
 bool FLintRunner::Init()
@@ -36,11 +31,6 @@ bool FLintRunner::Init()
 		return false;
 	}
 
-	if (pLoadedRuleList == nullptr)
-	{
-		return false;
-	}
-
 	if (pOutRuleViolations == nullptr)
 	{
 		return false;
@@ -51,7 +41,7 @@ bool FLintRunner::Init()
 
 uint32 FLintRunner::Run()
 {	
-	if (LoadedObject == nullptr || pLoadedRuleList == nullptr || RuleSet == nullptr || pOutRuleViolations == nullptr)
+	if (LoadedObject == nullptr || RuleSet == nullptr || pOutRuleViolations == nullptr)
 	{
 		return 2;
 	}
@@ -60,7 +50,7 @@ uint32 FLintRunner::Run()
 	UE_LOG(LogLinter, Display, TEXT("Loaded '%s'..."), *AssetPath);
 
 	TArray<FLintRuleViolation> RuleViolations;
-	pLoadedRuleList->PassesRules(LoadedObject, RuleSet, RuleViolations);
+	LoadedRuleList.PassesRules(LoadedObject, RuleSet, RuleViolations);
 
 	if (RuleViolations.Num() > 0)
 	{

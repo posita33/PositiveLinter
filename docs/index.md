@@ -18,10 +18,11 @@ PositiveLinter と [Gamemakin LLC Style Guide](http://ue4.style) の公式ドキ
 
 PositiveLinter は、Unreal Engine 5.7.4 向けのアセット検証・命名規約チェック用エディタープラグインです。ルールセットを使ってプロジェクトのコンテンツを自動スキャンし、規約に違反しているアセットをレポートします。Web 開発で一般的な lint の仕組みを、Unreal Engine プロジェクトにも適用できます。
 
-標準で次の 2 種類のルールセットを同梱しています。
+標準で次の 3 種類のルールセットを同梱しています。
 
 1. [Unreal Engine Marketplace Guidelines](https://www.unrealengine.com/marketplace-guidelines) を基にしたルールセット
 2. [Gamemakin LLC Style Guide](http://ue4.style) のルールセット
+3. [PositiveLinter UE5 Style Guide](ue5rules.md): Niagara、MetaSound、Enhanced Input など 18 クラスに対応した UE5 向けルールセット
 
 ## Gamemakin LLC Style Guide について
 

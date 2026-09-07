@@ -12,6 +12,10 @@ public class Linter : ModuleRules
 			new string[]
 			{
 				"Core",
+				"CoreUObject",
+				"Engine",
+				"AssetRegistry",
+				"PropertyEditor",
 			}
 		);
 			
@@ -19,9 +23,7 @@ public class Linter : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
             {
-                "CoreUObject",
                 "ContentBrowser",
-                "Engine",
                 "Slate",
                 "SlateCore",
 				"AppFramework",
@@ -30,7 +32,6 @@ public class Linter : ModuleRules
                 "GraphEditor",
                 "AssetTools",
                 "BlueprintGraph",
-                "PropertyEditor",
                 "LauncherPlatform",
                 "Projects",
 				"DesktopPlatform",

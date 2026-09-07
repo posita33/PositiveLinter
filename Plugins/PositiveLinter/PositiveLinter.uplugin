@@ -11,7 +11,20 @@
 	"SupportURL": "https://github.com/posita33/PositiveLinter",
 	"CanContainContent": true,
 	"Installed": false,
+	"Plugins": [
+		{
+			"Name": "Niagara",
+			"Enabled": true
+		}
+	],
 	"Modules": [
+		{
+			"Name": "UE5Linter",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [ "Win64", "Mac", "Linux" ],
+			"TargetDenyList": [ "Server", "Client" ]
+		},
 		{
 			"Name": "Linter",
 			"Type": "Editor",
