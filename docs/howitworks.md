@@ -14,6 +14,8 @@ PositiveLinter に同梱されるルールセットは、プラグインのコ�
 
 ## LintRuleSet の構成
 
+UE5 の Niagara・MetaSound などを検証する場合は、[UE5 アセット用ルールの利用と拡張](ue5rules.md)を参照してください。追加の `UE5Linter` モジュールに、専用ルールセットと命名規約を用意しています。
+
 ![](img/howitworks-20260906-025341.png)
 
 ルールセットは `LintRuleSet` アセットで定義します。これは [Data Asset](https://www.youtube.com/watch?v=gLWXZ3FXhO8) の一種です。上の例では、Marketplace ガイドラインへの適合を確認するためのルールを定義した `MarketplaceLintRuleSet` アセットを開いています。
@@ -40,7 +42,7 @@ UE 5.7.4 のエディターでは、Class Lint Rules Map のキーに `UObject` 
 
 `LintRule` は Blueprint と C++ のどちらでも実装できます。ただし、アセットメタデータや低レベルのアセット管理に関する機能は、Blueprint には十分公開されていません。検証ロジックは C++ に実装し、設定項目だけを Blueprint クラスに公開する方法を推奨します。
 
-同梱の `LintRule` はすべて、ネイティブ C++ の `LintRule` を親に持つ Blueprint 子クラスです。Blueprint 側では主に設定値を公開します。
+従来の同梱 `LintRule` は、ネイティブ C++ の `LintRule` を親に持つ Blueprint 子クラスです。Blueprint 側では主に設定値を公開します。`UE5Linter` の新規ルールは C++ クラスを直接登録して利用でき、Blueprint 子クラスで設定や検証内容を変更することもできます。
 
 ### PassesRule_Internal_Implementation
 

@@ -6,7 +6,7 @@
 #include "GamemakinNamingConvention.generated.h"
 
 UCLASS()
-class UGamemakinNamingConvention : public ULinterNamingConvention
+class GAMEMAKINLINTER_API UGamemakinNamingConvention : public ULinterNamingConvention
 {
 	GENERATED_BODY()
 
