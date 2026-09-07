@@ -2,6 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataAsset.h"
 #include "Misc/ScopedSlowTask.h"
 #include "LintRule.h"
 
@@ -38,8 +39,11 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "Conventions")
 	const FLintRuleList* GetLintRuleListForClass(TSoftClassPtr<UObject> Class) const;
 
+	/** Resolve an owned rule list; extension modules can supply class-specific rules. */
+	virtual FLintRuleList GetResolvedLintRulesForClass(UClass* Class) const;
+
 	UFUNCTION(BlueprintCallable, Category = "Conventions")
-	ULinterNamingConvention* GetNamingConvention() const;
+	virtual ULinterNamingConvention* GetNamingConvention() const;
 
 	/** Invoke this with a list of asset paths to recursively lint all assets in paths. */
 	//UFUNCTION(BlueprintCallable, Category = "Lint")

@@ -2,6 +2,7 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "Engine/DataAsset.h"
 #include "UObject/Object.h"
 #include "Templates/SharedPointer.h"
 #include "IDetailCustomization.h"

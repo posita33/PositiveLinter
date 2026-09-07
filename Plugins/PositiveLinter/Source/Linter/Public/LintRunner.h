@@ -27,7 +27,8 @@ protected:
 	const ULintRuleSet* RuleSet = nullptr;
 	TArray<FLintRuleViolation>* pOutRuleViolations;
 
-	const FLintRuleList* pLoadedRuleList;
+	// Own the resolved list: derived rule sets may compose it dynamically.
+	FLintRuleList LoadedRuleList;
 	static FCriticalSection LintDataUpdateLock;
 
 	FScopedSlowTask* ParentScopedSlowTask;

@@ -117,6 +117,12 @@ TArray<TSharedPtr<FLintRuleViolation>> ULintRuleSet::LintPathShared(TArray<FStri
 	return SharedRuleViolations;
 }
 
+FLintRuleList ULintRuleSet::GetResolvedLintRulesForClass(UClass* Class) const
+{
+	const FLintRuleList* Rules = GetLintRuleListForClass(Class);
+	return Rules != nullptr ? *Rules : FLintRuleList();
+}
+
 const FLintRuleList* ULintRuleSet::GetLintRuleListForClass(TSoftClassPtr<UObject> Class) const
 {
 	UClass* searchClass = Class.LoadSynchronous();
