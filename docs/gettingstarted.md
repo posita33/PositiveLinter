@@ -1,7 +1,7 @@
 ---
 title: はじめに
 lang: ja
-date: 2026-09-06
+date: 2026-09-08
 tags: [unreal-engine, positive-linter, installation]
 status: active
 ---
@@ -54,8 +54,10 @@ Niagara・MetaSound などの UE5 アセットには **PositiveLinter UE5 Style 
 
 ## Lint Report
 
-スキャンが完了すると、プロジェクト全体の状態をまとめた **Lint Report** が表示されます。
+スキャンが完了すると、選択した対象の検証結果をまとめた **Lint Report** が表示されます。
 「Export To JSON」,「Export To HTML」をクリックすると外部ファイルとして結果を出力できます。
 「CLOSE」をクリックすると終了します。
 
 ![](img/gettingstarted-20260906-020744.png)
+
+HTML レポートでは、指摘の一覧を重要度やアセットの種類で絞り込み、検索・ソートできます。詳細パネルから修正案を確認でき、絞り込み結果の全件を CSV に出力できます。操作方法と以前のレポートの変換方法は [HTML レポートの使い方](report.md)を参照してください。

@@ -7,7 +7,7 @@
 #include "Engine/ObjectLibrary.h"
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
-#include "Interfaces/IPluginManager.h"
+#include "LintReportExport.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Serialization/JsonWriter.h"
@@ -214,7 +214,7 @@ int32 ULinterCommandlet::Main(const FString& InParams)
 			if (ParamsMap.Contains(FString(TEXT("html"))))
 			{
 				const FString HtmlOutputOverride = *ParamsMap.FindChecked(TEXT("html"));
-				if (FPaths::IsRelative(HtmlOutputName))
+				if (FPaths::IsRelative(HtmlOutputOverride))
 				{
 					HtmlOutputName = HtmlOutputOverride;
 					FullOutputPath = LintReportPath / HtmlOutputName;
@@ -229,25 +229,19 @@ int32 ULinterCommandlet::Main(const FString& InParams)
 			IFileManager::Get().MakeDirectory(*FPaths::GetPath(FullOutputPath), true);
 			UE_LOG(LinterCommandlet, Display, TEXT("Exporting HTML report to %s"), *FullOutputPath);
 
-			FString TemplatePath = FPaths::Combine(*IPluginManager::Get().FindPlugin(TEXT("PositiveLinter"))->GetBaseDir(), TEXT("Resources"), TEXT("LintReportTemplate.html"));
-			UE_LOG(LinterCommandlet, Display, TEXT("Loading HTML report template from %s"), *TemplatePath);
-
+			FLintReportMetadata ReportMetadata;
+			ReportMetadata.Project = FPaths::GetBaseFilename(FPaths::GetProjectFilePath());
+			ReportMetadata.RuleSet = RuleSet->RuleSetDescription.ToString();
+			ReportMetadata.Paths = Paths;
 			FString HTMLReport;
-			if (FFileHelper::LoadFileToString(HTMLReport, *TemplatePath))
+			FString ReportError;
+			if (!FLintReportExport::CreateHtmlReport(RootJsonObject.ToSharedRef(), ReportMetadata, HTMLReport, ReportError))
 			{
-				UE_LOG(LinterCommandlet, Display, TEXT("Loading HTML report template successfully."));
-
-				HTMLReport.ReplaceInline(TEXT("{% TITLE %}"), *FPaths::GetBaseFilename(FPaths::GetProjectFilePath()));
-				HTMLReport.ReplaceInline(TEXT("{% RESULTS %}"), *ResultsString);
-				HTMLReport.ReplaceInline(TEXT("{% LINT_REPORT %}"), *JsonReport);
-			}
-			else
-			{
-				UE_LOG(LinterCommandlet, Error, TEXT("Failed to load HTML report template."));
+				UE_LOG(LinterCommandlet, Error, TEXT("%s"), *ReportError);
 				return 1;
 			}
 
-			if (FFileHelper::SaveStringToFile(HTMLReport, *FullOutputPath))
+			if (FFileHelper::SaveStringToFile(HTMLReport, *FullOutputPath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
 			{
 				UE_LOG(LinterCommandlet, Display, TEXT("Exported HTML report successfully."));
 			}

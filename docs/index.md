@@ -1,7 +1,7 @@
 ---
 title: PositiveLinter ドキュメント
 lang: ja
-date: 2026-09-06
+date: 2026-09-08
 tags: [unreal-engine, positive-linter, lint]
 status: active
 ---
@@ -23,6 +23,8 @@ PositiveLinter は、Unreal Engine 5.7.4 向けのアセット検証・命名規
 1. [Unreal Engine Marketplace Guidelines](https://www.unrealengine.com/marketplace-guidelines) を基にしたルールセット
 2. [Gamemakin LLC Style Guide](http://ue4.style) のルールセット
 3. [PositiveLinter UE5 Style Guide](ue5rules.md): Niagara、MetaSound、Enhanced Input など 18 クラスに対応した UE5 向けルールセット
+
+導入方法は[はじめに](gettingstarted.md)、出力結果の検索・絞り込み・CSV 出力は [HTML レポートの使い方](report.md)を参照してください。HTML レポートは 1 ファイルで共有でき、ブラウザー上でオフラインで操作できます。
 
 ## Gamemakin LLC Style Guide について
 
