@@ -114,7 +114,7 @@ Commandlet を実行するには、Editor のコマンドレット実行バイ�
 
 Gamemakin LLC UE4 Style Guide の Commandlet Name は `ue4.style`、Marketplace ルールセットは `marketplace` です。
 
-`-RuleSet=` 引数でルールセットを指定できます。たとえば `-RuleSet=ue4.style` は Gamemakin のルールセットを、`-RuleSet=marketplace` は Marketplace ルールセットを使用します。`-RuleSet=` を省略した場合は、プロジェクトの既定 LintRuleSet が使用されます。
+`-RuleSet=` 引数でルールセットを指定できます。たとえば `-RuleSet=ue4.style` は Gamemakin のルールセットを、`-RuleSet=marketplace` は Marketplace ルールセットを使用します。`-RuleSet=` を省略した場合は、プロジェクトの既定 LintRuleSet が使用されます。PositiveLinter の標準設定では **PositiveLinter UE5 Style Guide (UE 5.7.4)** が既定です。プロジェクト設定で別の既定値を保存している場合はそちらが優先されます。
 
 ### 追加引数
 

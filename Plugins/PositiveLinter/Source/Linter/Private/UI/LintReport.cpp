@@ -5,7 +5,7 @@
 
 #include "LintRule.h"
 #include "Linter.h"
-#include "Interfaces/IPluginManager.h"
+#include "LintReportExport.h"
 #include "Widgets/Views/STableRow.h"
 #include "Widgets/Views/SListView.h"
 #include "Widgets/SBoxPanel.h"
@@ -118,6 +118,7 @@ void SLintReport::Construct(const FArguments& Args)
 			[
 				SNew(SButton)
 				.Text(LOCTEXT("ExportToHTML", "Export To HTML"))
+				.IsEnabled_Lambda([this]() { return !HTMLReport.IsEmpty(); })
 				.OnClicked_Lambda([this]() -> FReply
 				{ 
 					IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
@@ -148,8 +149,14 @@ void SLintReport::Construct(const FArguments& Args)
 					if (OutFilenames.Num() > 0)
 					{
 						FString WritePath = FPaths::ConvertRelativePathToFull(OutFilenames[0]);
-						FFileHelper::SaveStringToFile(HTMLReport, *WritePath);
-						FPlatformProcess::LaunchURL(*WritePath, TEXT(""), nullptr);
+						if (FFileHelper::SaveStringToFile(HTMLReport, *WritePath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
+						{
+							FPlatformProcess::LaunchURL(*WritePath, TEXT(""), nullptr);
+						}
+						else
+						{
+							UE_LOG(LogLinter, Error, TEXT("Failed to export HTML report to %s"), *WritePath);
+						}
 					}
 
 					return FReply::Handled();
@@ -356,14 +363,15 @@ void SLintReport::Rebuild(const ULintRuleSet* SelectedLintRuleSet)
 	FText ResultsSummary = FText::FormatNamed(LOCTEXT("ErrorWarningDisplay", "{NumAssets} {NumAssets}|plural(one=Asset,other=Assets), {NumErrors} {NumErrors}|plural(one=Error,other=Errors), {NumWarnings} {NumWarnings}|plural(one=Warning,other=Warnings)"), TEXT("NumAssets"), NumAssets, TEXT("NumErrors"), NumErrors, TEXT("NumWarnings"), NumWarnings);
 	ResultsTextBlockPtr->SetText(ResultsSummary);
 
-	// Prepare the HTML Export
-	FString TemplatePath = FPaths::Combine(*IPluginManager::Get().FindPlugin(TEXT("PositiveLinter"))->GetBaseDir(), TEXT("Resources"), TEXT("LintReportTemplate.html"));
-
-	if (FFileHelper::LoadFileToString(HTMLReport, *TemplatePath))
+	// HTML uses a deduplicated payload; standalone JSON retains its existing public schema.
+	FLintReportMetadata ReportMetadata;
+	ReportMetadata.Project = FPaths::GetBaseFilename(FPaths::GetProjectFilePath());
+	ReportMetadata.RuleSet = SelectedLintRuleSet->RuleSetDescription.ToString();
+	ReportMetadata.Paths = LintPaths;
+	FString ReportError;
+	if (!FLintReportExport::CreateHtmlReport(RootJsonObject.ToSharedRef(), ReportMetadata, HTMLReport, ReportError))
 	{
-		HTMLReport.ReplaceInline(TEXT("{% TITLE %}"), *FPaths::GetBaseFilename(FPaths::GetProjectFilePath()));
-		HTMLReport.ReplaceInline(TEXT("{% RESULTS %}"), *ResultsSummary.ToString());
-		HTMLReport.ReplaceInline(TEXT("{% LINT_REPORT %}"), *JsonReport);
+		UE_LOG(LogLinter, Error, TEXT("%s"), *ReportError);
 	}
 
 	bHasRanReport = true;
