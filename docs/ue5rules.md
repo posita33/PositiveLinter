@@ -17,7 +17,7 @@ UE4 スタイルガイド由来の `GamemakinLinter` は引き続き利用でき
 1. プロジェクトで PositiveLinter を有効にし、UE 5.7.4 向けにビルドしてエディターを起動します。Niagara は PositiveLinter の依存プラグインとして有効になります。
 2. Content Browser の **Settings → Show Plugin Content** を有効にします。
 3. 検証対象フォルダーを右クリックし、**Scan with PositiveLinter** を選択します。
-4. ランチャーで **PositiveLinter UE5 Style Guide (UE 5.7.4)** を選び、スキャンを実行します。
+4. ランチャーで初期選択されている **PositiveLinter UE5 Style Guide (UE 5.7.4)** を使い、スキャンを実行します。
 
 同梱プリセットはプラグインコンテンツの `UE5Linter` フォルダーにあります。
 

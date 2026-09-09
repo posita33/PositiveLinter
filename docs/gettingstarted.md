@@ -44,9 +44,9 @@ status: active
 
 ![](img/gettingstarted-20260906-013611.png)
 
-3. 使用するルールセットを選択し、NEXTボタンをクリックします。
+3. 初期選択されている **PositiveLinter UE5 Style Guide (UE 5.7.4)** を使うか、別のルールセットを選択し、NEXTボタンをクリックします。
 
-Niagara・MetaSound などの UE5 アセットには **PositiveLinter UE5 Style Guide (UE 5.7.4)** を選択してください。対応クラスとルールの追加方法は[UE5 アセット用ルールの利用と拡張](ue5rules.md)で説明しています。
+プロジェクト側で既定のルールセットを指定済みの場合はその設定が優先されます。Niagara・MetaSound などの UE5 アセット用ルールの追加方法は[UE5 アセット用ルールの利用と拡張](ue5rules.md)で説明しています。
 
 ![](img/gettingstarted-20260906-015914.png)
 
